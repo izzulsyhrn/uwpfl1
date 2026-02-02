@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SYSTEM_X – BOOT SEQUENCE</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin:0;
+      height:100vh;
+      background:#000;
+      color:#0f0;
+      font-family:'VT323', monospace;
+      font-size: 1.4rem;
+      line-height: 1.5;
+      overflow:hidden;
+      position:relative;
+    }
+
+.crt {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,0,0.04),
+        rgba(0,255,0,0.04) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+.scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(0,255,0,0.08), transparent);
+      animation: scan 8s linear infinite;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+@keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+
+.terminal {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+.prompt { margin: 1.2rem 0; }
+    .blink { animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity:0; } }
+
+.output { color: #0c8; margin: 1rem 0; white-space: pre-wrap; }
+
+form { display: flex; align-items: center; }
+    input {
+      background: transparent;
+      border: none;
+      color: #0f0;
+      font: inherit;
+      flex: 1;
+      outline: none;
+    }
+
+.glow { text-shadow: 0 0 10px #0f0, 0 0 20px #0f0; }
+  </style>
+</head>
+<body>
+
+<div class="crt"></div>
+  <div class="scanline"></div>
+
+<div class="terminal">
+    <div class="output glow">SYSTEM_X v4.2 – BOOT SEQUENCE INITIATED</div>
+    <div class="output">[....................................] 100%</div>
+    <div class="output glow">LAUNCH PROTOCOL ACTIVE – ETA Q2 2026</div>
+
+<div class="prompt">
+      > <span id="typewriter"></span><span class="blink">_</span>
+    </div>
+
+<div class="prompt output" id="response"></div>
+
+<form id="term-form">
+      <span>> subscribe </span>
+      <input type="email" id="email-in" placeholder="your@email.here" autocomplete="off" autofocus />
+    </form>
+  </div>
+
+<script>
+    const text = "Welcome operator. Enter access credential (email) to join priority queue.";
+    const typewriter = document.getElementById('typewriter');
+    let i = 0;
+
+    function type() {
+      if (i < text.length) {
+        typewriter.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, 60 + Math.random()*40);
+      }
+    }
+    setTimeout(type, 800);
+
+    const form = document.getElementById('term-form');
+    const resp = document.getElementById('response');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('email-in').value.trim();
+
+      if (!val || !val.includes('@')) {
+        resp.textContent = 'ERROR: Invalid credential format.';
+        resp.style.color = '#f44';
+        return;
+      }
+
+      resp.textContent = 'ACCESS GRANTED. User added to priority queue.';
+      resp.style.color = '#0f0';
+      document.getElementById('email-in').value = '';
+      document.getElementById('email-in').disabled = true;
+    });
+  </script>
+
+</body>
+</html>
